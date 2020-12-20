@@ -1,0 +1,54 @@
+@startuml
+title ATB
+start
+floating note left:/start
+    :"Привет! Я бот для проведения быстрого \nголосования в концепции SCRUM";
+partition Init {
+    partition InitGitlab {
+        :Пришли следующим сообщением адрес **gitlab** \n в формате **http[s]://ip|domain:[port]**;
+        while (Сcылка валидна?) is (Нет);
+            :Сcылка не валидна!;
+        endwhile (Да);
+    }
+    partition SelectProject {
+        :Выбирай проект]
+        while (Проект с указанным ID существует?) is (Нет)
+            : Проекта с указанным ID не существует!;
+        endwhile (Да)
+    }
+}
+    #green:(Указанные в чате настройки сохранены);
+    :Бот работает с проектом http://<gitlab-address.bot><ProjectName>;
+    split
+        :**/milestone <IID>**;
+        partition SelectMilestone {
+            while (Майлстоун с указанным ID существует?) is (Нет)
+                : Проекта с указанным ID не существует!;
+            endwhile (Да)
+
+            while (В майлстоуне есть задачи?) is (Нет)
+                : В майлстоуне нет задач для голосования;
+            endwhile (Да)
+        }
+    split again
+        partition Vote {
+        :**/vote <IID>**;
+        while (Issue с указанным ID существует?) is (Нет)
+            : Issue с указанным ID не существует!;
+        endwhile (Да)
+              :GetPollByIID()
+              SendPoll()|
+              :Голосование: <[IID] Issue title>;
+        : StopPoll() |
+        }
+    split again
+        :**/help**;
+        partition Help {
+            :GetHelp()|
+            : <текст справки>;
+        }
+        stop
+    end split
+:ListMilestoneIssues();
+stop
+@enduml
